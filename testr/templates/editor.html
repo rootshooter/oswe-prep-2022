@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Testr / Editor</title>
+        <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.5/build/pure-min.css" integrity="sha384-LTIDeidl25h2dPxrB2Ekgc9c7sEC3CWGM6HeFmuDNUjX76Ert4Z4IY714dhZHPLd" crossorigin="anonymous">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+        <link rel="shortcut icon" type="image/png" href="{{ url_for('static', filename='images/python.png') }}">
+        <script src="{{ url_for('static',filename='js/customKeyEvents.js') }}"></script>
+        <script src="{{ url_for('static',filename='js/common.js') }}"></script>
+    </head>
+    <body>
+        <div class="container">
+            <div class="nav-menu pure-menu">
+                <span class="pure-menu-heading">
+                    <img class="logo-img" src="{{ url_for('static', filename='images/python.png') }}" />T E S T R
+                </span>
+                <ul class="pure-menu-list">
+                    <li class="pure-menu-item profile">
+                        Hi, {{ session['user'][3] }}!
+                    </li>
+                    {% if session['user'][1] == 1 %}
+                        <li class="pure-menu-item">
+                            <a href="#" onclick="toggleElement('applications-container','inline-grid');toggleElement('overlay','block')" class="pure-menu-link">Manage Apps. [{{ apps|length }}]</a>
+                        </li>
+                    {% endif %}
+                    <li class="pure-menu-item">
+                        <a href="#" onclick="toggleElement('settings-container','inline-grid');toggleElement('overlay','block')" class="pure-menu-link">Settings</a>
+                    </li>
+                    <li class="pure-menu-item">
+                        <a href="{{ url_for('logout') }}" class="pure-menu-link">Log out</a>
+                    </li>
+                </ul>
+                {% with msgs = get_flashed_messages(with_categories=true) %}
+                    {% if msgs %}
+                        {% for cat, msg in msgs %}
+                            <div class="alert alert-{{ cat }}">
+                                {{ msg }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+                <div class="nav-footer">
+                    &copy; 2021 William Moody
+                </div>
+            </div>
+            <div class="content">
+                <div class="editor">
+                        <div class="ta-container editor-code">
+                            <form method="POST" name="codeForm">
+                                <textarea name="code" id="ec-ta" onkeydown="customKeyEvents(this, event);" 
+placeholder="def hello(name):
+    print('Hello, %s!' % name)
+
+hello('Testr')" autofocus>{{ code }}</textarea>
+                                <label class="editor-label" for="ec-ta">Python 3</label>
+                                <button type="submit" class="pure-button">Run [Ctrl-Enter]</button>
+                            </form>
+                        </div>
+                    <div class="ta-container editor-output">
+                        <textarea id="eo-ta" placeholder="Hello, Testr!" readonly>{{ out }}</textarea>
+                        <label class="editor-label" for="eo-ta">Output</label>
+                    </div>
+                </div>
+                <div id="overlay" style="display:none"></div>
+                {% if session['user'][1] %}
+                    <div id="applications-container" style="display:none">
+                        <h2>Manage Applications</h2>
+                        <table class="pure-table pure-table-horizontal" id="applications-table">
+                            <thead>
+                                <tr>
+                                    <th>Email</th>
+                                    <th>Name</th>
+                                    <th>Portfolio&nbsp;/&nbsp;Website</th>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if apps %}
+                                    {% for app in apps %}
+                                        <tr>
+                                            <td>{{ app[0] }}</td>
+                                            <td>{{ app[3] }}</td>
+                                            <td>{% if app[4] != None %}<a href="{{ app[4] }}">Link</a>{% else %}Not given{% endif %}</td>
+                                            <td><button onclick="approve_deny('/approve','{{ app[0] }}');classRow('{{ loop.index }}','row-approved')" class="pure-input-rounded pure-button approve-button">Approve</button></td>
+                                            <td><button onclick="approve_deny('/deny','{{ app[0] }}');classRow('{{ loop.index }}','row-denied')" class="pure-input-rounded pure-button deny-button">Deny</button></td>
+                                        </tr>
+                                    {% endfor %}
+                                {% else %}
+                                        <tr>
+                                            <td>No applications pending.</td>
+                                        </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                        <div style="margin-top:1em;text-align:right;">
+                            <button type="button" class="inverse-gold-button pure-input-rounded pure-button pure-button-primary" 
+                            onclick="toggleElement('applications-container','inline-grid');toggleElement('overlay','block')">Close</button>
+                        </div>
+                    </div>
+                {% endif %}
+                <div id="settings-container" style="display:none">
+                    <div class="settings-form">
+                        <form class="pure-form pure-form-stacked" method="POST" action="{{ url_for('update_details') }}">
+                            <fieldset>
+                                <legend>Update Details</legend>
+                                <label for="email">Email</label>
+                                <input type="text" id="email" value="{{ session['user'][0] }}"  class="pure-input-rounded" readonly/>
+                                <label for="name">Name</label>
+                                <input name="name" type="text" id="name" value="{{ session['user'][3] }}"  class="pure-input-rounded" />
+                                <br><br>
+                                <button type="submit" class="gold-button pure-input-rounded pure-button pure-button-primary">Update Details</button>
+                            </fieldset>
+                        </form>
+                    </div>
+                    <div class="settings-form">
+                        <form class="pure-form pure-form-stacked" method="POST" action="{{ url_for('change_password') }}">
+                            <fieldset>
+                                <legend>Change Password</legend>
+                                <label for="secret_phrase">Secret Phrase</label>
+                                <input name="secret_phrase" type="password" id="secret_phrase" class="pure-input-rounded" placeholder="Secret Phrase" />
+                                <label for="password">New Password</label>
+                                <input name="password" type="password" id="password" class="pure-input-rounded" placeholder="Password" />
+                                <label for="password2">Confirm Password</label>
+                                <input name="password2" type="password" id="password2" class="pure-input-rounded" placeholder="Confirm Password" />
+                                <br><br>
+                                <button type="submit" class="gold-button pure-input-rounded pure-button pure-button-primary">Change Secret Phrase</button>
+                            </fieldset>
+                        </form>
+                    </div>
+                    <div class="settings-form">
+                        <form class="pure-form pure-form-stacked" method="POST" action="{{ url_for('change_secret_phrase') }}">
+                            <fieldset>
+                                <legend>Change Secret Phrase</legend>
+                                <label for="secret_phrase">New Secret Phrase</label>
+                                <input name="secret_phrase" type="password" id="secret_phrase" class="pure-input-rounded" placeholder="Secret Phrase" />
+                                <label for="secret_phrase2">Confirm Secret Phrase</label>
+                                <input name="secret_phrase2" type="password" id="secret_phrase2" class="pure-input-rounded" placeholder="Secret Phrase" />
+                                <br><br>
+                                <button type="submit" class="gold-button pure-input-rounded pure-button pure-button-primary">Change Secret Phrase</button>
+                            </fieldset>
+                        </form>
+                    </div>
+                    <div></div>
+                    <div></div>
+                    <div style="text-align:right;">
+                        <button type="button" class="inverse-gold-button pure-input-rounded pure-button pure-button-primary" 
+                        onclick="toggleElement('settings-container','inline-grid');toggleElement('overlay','block')">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

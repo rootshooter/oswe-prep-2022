@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Order</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    </head>
+    <body>
+        <div class="container">
+            <h1 class="logo">Order</h1>
+            <div class="info">
+                <div class="title">Introduction</div>
+                <p>
+                    The page <code>/horses</code> has an SQL injection vulnerability in the 
+                    <code>ORDER BY</code> clause. The goal of this challenge is to exploit this 
+                    to dump the admin's credentials. You may check if you got the correct credentials
+                    by "logging in" at the bottom of the page. 
+                    <br><br>
+                    All the tables which are present in the database this app uses are listed in the
+                    section below, as well as their columns.
+
+                    <br><br>
+                    To begin, press the <code>Begin</code> button.
+                </p>
+            </div>
+            <div class="info">
+                <div class="title">Tables</div>
+                <p><code>
+                    users: <i><span class="table">user_id</span> 
+                        <span class="datatype">SERIAL PRIMARY KEY</span>, 
+                        <span class="table">username</span> 
+                        <span class="datatype">VARCHAR(<span class="number">255</span>) NOT NULL</span>, 
+                        <span class="table">password</span> 
+                        <span class="datatype">VARCHAR(<span class="number">255</span>) NOT NULL</span></i>
+                    <br>
+                    horses: <i><span class="table">horse_id</span> 
+                        <span class="datatype">SERIAL PRIMARY KEY</span>, 
+                        <span class="table">name</span> 
+                        <span class="datatype">VARCHAR(<span class="number">255</span>) NOT NULL</span>, 
+                        <span class="table">birthdate</span> 
+                        <span class="datatype">DATE NOT NULL</span>, 
+                        <span class="table">description</span> 
+                        <span class="datatype">VARCHAR(<span class="number">255</span>) NOT NULL</span></i>
+                </code></p>
+            </div>
+            <div class="info">
+                <div class="title">Log In</div>
+                <form class="login-form" method="POST">
+                    <input value="admin" readonly required><br>
+                    <input name="password" type="password" placeholder="Password" required><br>
+                    <input type="submit" value="Log In"><br>
+                    {% if success is not none %}
+                        {% if success>0 %}
+                            <span class="congrats">Correct!</span>
+                        {% else %}
+                            <span class="wrong">Wrong. Keep trying...</span>
+                        {% endif %}
+                    {% endif %}
+                </form>
+            </div>
+            <a href="{{ url_for('horses') }}" style="float:right">Begin</a>
+        </div>
+        <div class="footer">
+            &copy; William Moody, 2021
+        </div>
+    </body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Horses</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    </head>
+    <body>
+        <div class="container">
+            <h1 class="logo">View all horses:</h1>
+            
+            <div class="info">
+                <form class="order-form">
+                    <select name="order">
+                        <option value="2">Name</option>
+                        <option value="3">Birthdate</option>
+                        <option value="4">Description</option>
+                    </select>
+                    <input type="submit" value="Sort by">
+                </form>
+                <table>
+                    <tr>
+                        {% if order=='2' %}
+                            <th class="selected">Name</th>
+                        {% else %}
+                            <th>Name</th>
+                        {% endif %}
+                        {% if order=='3' %}
+                            <th class="selected">Birthdate</th>
+                        {% else %}
+                            <th>Birthdate</th>
+                        {% endif %}
+                        {% if order=='4' %}
+                            <th class="selected">Description</th>
+                        {% else %}
+                            <th>Description</th>
+                        {% endif %}
+                    </tr>
+                    {% for row in rows %}
+                    <tr>
+                        <td>{{ row[1] }}</td>
+                        <td>{{ row[2] }}</td>
+                        {% if row[3] is not none %}
+                            <td>{{ row[3] }}</td>
+                        {% else %}
+                            <td>-</td>
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <a href="{{ url_for('index') }}">Back</a>
+        </div>
+        <div class="footer">
+            &copy; William Moody, 2021
+        </div>
+    </body>
+</html>

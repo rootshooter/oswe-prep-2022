@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en"> 
+<html>
+    <head>
+        <meta charset="utf-8"/>
+        <title>Testr / Api</title>
+        <link rel="shortcut icon" type="image/png" href="{{ url_for('static', filename='images/python.png') }}">
+    </head>
+    <body>
+        <div style="text-align:center;">
+            <h1>Testr API Developer Docs</h1>
+            <h3>v1.8.6</h3>
+            <p>&copy; 2021, William Moody</p>
+        </div>
+        <hr>
+            <form>
+                <input id="q" name="q" placeholder="/editor"/>
+                <button type="submit">Search</button>
+                <span style="color:red" id="msg"></span>
+            </form>
+        <hr>
+        <h2 id="get_index">GET /</h2>
+        <p>
+            Checks if the user is logged in, if he is then he gets redirected to <code>/editor</code>. 
+            <br>
+            If the user is not logged in they are redirected to <code>/login</code>
+        </p>
+        <hr>
+
+        <h2 id="get_api">GET /api</h2>
+        <p>
+            This page. Displays information about all pages / requests this server uses.
+        </p>
+        <hr>
+
+        <h2 id="get_apply">POST /apply</h2>
+        <p>
+            Sends an application for membership.
+            <br>
+            Requires this body:
+            <br>
+            <code>{name, email, secret_phrase, password, password2}</code>
+        </p>
+        <hr>
+
+        <h2 id="post_approve">POST /approve</h2>
+        <p>
+            Approves a user's application. Ignores requests from non-admins.
+            <br>
+            Requires this body:
+            <br>
+            <code>{email}</code>
+        </p>
+        <hr>
+
+        <h2 id="post_change_password">POST /change_password</h2>
+        <p>
+            Changes a <b>logged in</b> user's password. 
+            <br>
+            Requires this body:
+            <br>
+            <code>{phrase, password, password2}</code>
+        </p>
+        <hr>
+
+        <h2 id="post_change_secret_phrase">POST /change_secret_phrase</h2>
+        <p>
+            Changes a <b>logged in</b> user's secret phrase. 
+            <br>
+            Requires this body:
+            <br>
+            <code>{phrase, phrase2}</code>
+        </p>
+        <hr>
+
+        <h2 id="post_dont">POST /deny</h2>
+        <p>
+            Denies a user's application. Ignores requests from non-admins.
+            <br>
+            Requires this body:
+            <br>
+            <code>{email}</code>
+        </p>
+        <hr>
+
+        <h2 id="get_editor">GET /editor</h2>
+        <p>
+            The editor page. A user must be <b>logged in</b>
+        </p>
+        <hr>
+
+        <h2 id="post_editor">POST /editor</h2>
+        <p>
+            Executes code in the editor. Output / Errors will be returned.
+            <br>
+            Requires this body:
+            <br>
+            <code>{code}</code>
+        </p>
+        <hr>
+
+        <h2 id="get_login">GET /login</h2>
+        <p>
+            The log in page. No authentication required.
+        </p>
+        <hr>
+
+        <h2 id="post_login">POST /login</h2>
+        <p>
+            Authenticates and starts a session for a user.
+            <br>
+            Requires this body:
+            <br>
+            <code>{email, password}</code>
+        </p>
+        <hr>
+
+        <h2 id="post_logout">POST /logout</h2>
+        <p>
+            Logs a user out and ends the session
+        </p>
+        <hr>
+
+        <h2 id="post_reset">POST /reset</h2>
+        <p>
+            Resets a user's password.
+            <br>
+            Requires this body:
+            <br>
+            <code>{email, phrase, password, password2}</code>
+        </p>
+        <hr>
+
+        <h2 id="post_update_details">POST /update_details</h2>
+        <p>
+            Updates a <b>logged in</b> user's details. 
+            <br>
+            Requires this body:
+            <br>
+            <code>{name}</code>
+        </p>
+    </body>
+    <script>
+        const re = new RegExp(/(\b)(on\S+)(\s*)=|javascript:|(<\s*)(\/*)script|style(\s*)=|(<\s*)meta/ig);
+        function cleanStr(s) {
+            return s.replaceAll(re, '');
+        }
+        function getUrlParameter(name) {
+            name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+            var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+            var results = regex.exec(location.search);
+            return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+        };
+        if (window.location.search.indexOf('q') > -1) {
+            var q = cleanStr(getUrlParameter('q'));
+            var list = document.getElementsByTagName("h2");
+            var found = false;
+            for (var i = 0; i < list.length && !found; i++) {
+                if (list[i].id.indexOf(q) >= 0) {
+                    document.getElementById(list[i].id).scrollIntoView();
+                    found = true;
+                }
+            }
+            if (!found) document.getElementById('msg').innerHTML = 
+                q + ' does not appear in the API documentation.';
+        }
+    </script>
+</html>

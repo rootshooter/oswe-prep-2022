@@ -1,0 +1,47 @@
+body {
+    background:#212529;
+    color:#eff3f5;
+}
+
+main {
+    margin-top:1em;
+}
+
+nav {
+    border-bottom:2px solid #5b6269;
+}
+
+table {
+    margin-top:1em;
+}
+
+table .author {
+    width:10%;
+    border-right:1px solid #5b6269;
+}
+
+table .author .datetime {
+    color:grey;
+    margin-right:0.5em;
+}
+
+table .author .username {
+    font-weight:bold;
+}
+
+table .message {
+    width:90%;
+}
+
+.msg-form {
+    margin-left:1em;
+    margin-right:1em;
+}
+
+form .txtarea {
+    margin-bottom:1em;
+}
+
+a {
+    text-decoration: none;
+}

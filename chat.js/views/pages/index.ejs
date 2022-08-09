@@ -1,0 +1,50 @@
+<!--
+  -- Chat.JS 
+  -- William Moody
+  -- 21.03.2021
+-->
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <%- include('../partials/head'); %>
+    </head>
+    <body>
+        <header>
+            <%- include('../partials/header'); %>
+        </header>
+
+        <main>
+            <% if (session.logged_in == true) { %>
+                <div class="msg-form">
+                    <form class="form-inline" method="POST" action="/send">
+                        <div class="input-group">
+                            <% if (draft != null) { %>
+                                <input type="text" class="form-control" name="message" value="<%= draft %>" autofocus>
+                            <% } else { %>
+                                <input type="text" class="form-control" name="message" placeholder="Type a message..." autofocus>
+                            <% } %>
+                            <button name="post" type="submit" class="btn btn-primary">Send</button>
+                            <button name="save" type="submit" class="btn btn-secondary">Save</button>
+                        </div>
+                    </form>
+                </div>
+            <% } %>
+            <table class="table table-dark table-striped table-hover">
+                <% messages.forEach(function(msg){ %>
+                    <tr>
+                        <td class="author">
+                            <span class="datetime"><%= msg.datetime.toTimeString().split(" ")[0] %></span>
+                            <span class="username"><%= msg.author[0].username %></span>
+                        </td>
+                        <td class="message"><%= msg.text %></td>
+                    </tr>
+                <% }); %>
+            </table>
+        </main>
+
+        <footer>
+            <%- include('../partials/footer'); %>
+        </footer>
+    </body>
+</html>

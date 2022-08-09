@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Testr / Log In</title>
+        <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.5/build/pure-min.css" integrity="sha384-LTIDeidl25h2dPxrB2Ekgc9c7sEC3CWGM6HeFmuDNUjX76Ert4Z4IY714dhZHPLd" crossorigin="anonymous">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+        <link rel="shortcut icon" type="image/png" href="{{ url_for('static', filename='images/python.png') }}">
+    </head>
+    <body>
+        <div class="login-container">
+            <img class="logo-img" src="{{ url_for('static', filename='images/python.png') }}">
+            <div class="logo">
+                T E S T R
+            </div>
+            <div class="description">
+                An invite-only web-based Python IDE.
+            </div>
+            <div class="quotes">
+                <!-- (Obviously) not real quotes -->
+                <div class="quote">
+                    <div class="text">
+                        "Move over VSCode, Testr is here, and it's not going anywhere!"
+                    </div>
+                    <div class="author">
+                        - StackOverflow
+                    </div>
+                </div>
+                <div class="quote">
+                    <div class="text">
+                        "Just... wow!"
+                    </div>
+                    <div class="author">
+                        - Forbes
+                    </div>
+                </div>
+                <div class="quote">
+                    <div class="text">
+                        "I can't believe we never thought of doing this ourselves. This is genius on so many levels. 5/5 Stars."
+                    </div>
+                    <div class="author">
+                        - Microsoft
+                    </div>
+                </div>
+                <div class="quote">
+                    <div class="text">
+                        "Na des is scho ei fresches Editor"
+                    </div>
+                    <div class="author">
+                        - Technische Universität Wien
+                    </div>
+                </div>
+                <div class="quote">
+                    <div class="text">
+                        "You know what? Screw IDLE. Screw PyCharm. From now on we will recommend all #Python programmers to use #Testr."
+                    </div>
+                    <div class="author">
+                        - Python Software Foundation
+                    </div>
+                </div>
+            </div>
+            <form class="pure-form login-form" method="POST">
+                <fieldset>
+                    <input name="email" type="email" class="pure-input-rounded" placeholder="Email" />
+                    <input name="password" type="password" class="pure-input-rounded" placeholder="Password" />
+                    <button type="submit" class="gold-button pure-input-rounded pure-button pure-button-primary">Log in</button>
+                    <a href="#" onclick="toggleElement('reset-container','block');toggleElement('overlay','block')">Reset password</a>
+                </fieldset>
+            </form>
+            <div class="apply">
+                Or<br><br>
+                <a class="pure-input-rounded pure-button pure-button-primary" href="#" 
+                    onclick="toggleElement('apply-container','block');toggleElement('overlay','block')">Apply</a>
+            </div>
+            {% with msgs = get_flashed_messages(with_categories=true) %}
+                {% if msgs %}
+                    {% for cat, msg in msgs %}
+                        <div class="alert alert-{{ cat }}">
+                            {{ msg }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+        </div>
+        <div id="overlay" style="display:none"></div>
+        <div id="reset-container" style="display:none">
+            <form class="pure-form pure-form-stacked" method="POST" action="{{ url_for('reset') }}">
+                <fieldset>
+                    <legend>Reset password</legend>
+                    <label for="email">Email*</label>
+                    <input name="email" type="email" id="email" class="pure-input-rounded" placeholder="Email" required/>
+                    <label for="secret_phrase">Secret Phrase*</label>
+                    <input name="secret_phrase" type="password" id="secret_phrase" class="pure-input-rounded" placeholder="Secret Phrase" required/>
+                    <hr>
+                    <label for="password">New Password*</label>
+                    <input name="password" type="password" id="password" class="pure-input-rounded" placeholder="Password" required/>
+                    <label for="password2">Confirm Password*</label>
+                    <input name="password2" type="password" id="password2" class="pure-input-rounded" placeholder="Password" required/>
+                    <br><br>
+                    <button type="submit" class="gold-button pure-input-rounded pure-button pure-button-primary">Change Password</button>
+                    <button type="button" class="inverse-gold-button pure-input-rounded pure-button pure-button-primary" 
+                        onclick="toggleElement('reset-container','block');toggleElement('overlay','block')">Cancel</button>
+                </fieldset>
+            </form>
+        </div>
+        <div id="apply-container" style="display:none">
+            <form class="pure-form pure-form-stacked" method="POST" action="/apply">
+                <fieldset>
+                    <legend>Apply for Membership</legend>
+                    <label for="name">Name*</label>
+                    <input name="name" type="text" id="name" class="pure-input-rounded" placeholder="Name" required/>
+                    <label for="email">Email*</label>
+                    <input name="email" type="email" id="email" class="pure-input-rounded" placeholder="Email" required/>
+                    <label for="website">Link to portfolio / website</label>
+                    <input name="website" type="text" id="website" class="pure-input-rounded" placeholder="Website" />
+                    <small style="color:#606060">Our admin will review your portfolio
+                        <br>if you chose to include one
+                    </small>
+                    <hr>
+                    <label for="secret_phrase">Secret Phrase*</label>
+                    <input name="secret_phrase" type="password" id="secret_phrase" class="pure-input-rounded" placeholder="Secret Phrase" required/>
+                    <label for="password">Password*</label>
+                    <input name="password" type="password" id="password" class="pure-input-rounded" placeholder="Password" required/>
+                    <label for="password2">Confirm Password*</label>
+                    <input name="password2" type="password" id="password2" class="pure-input-rounded" placeholder="Password" required/>
+                    <br><br>
+                    <button type="submit" class="gold-button pure-input-rounded pure-button pure-button-primary">Apply</button>
+                    <button type="button" class="inverse-gold-button pure-input-rounded pure-button pure-button-primary"
+                        onclick="toggleElement('apply-container','block');toggleElement('overlay','block')">Cancel</button>
+                </fieldset>
+            </form>
+        </div>
+        <script src="{{ url_for('static',filename='js/common.js') }}"></script>
+    </body>
+</html>
